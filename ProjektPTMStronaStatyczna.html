@@ -1,0 +1,89 @@
+<html>
+	<head>
+		<title>Zarządzanie żaluzjami</title>
+		<style>
+			*{
+				padding:0;
+				margin:0;
+			}
+			.header{
+				height:50px;
+				background-color:gray;
+				text-align:center;
+			}
+			.content{
+				height:calc(100% - 50px);
+				background-color:silver;
+				padding:5px;
+				box-sizing: border-box;
+				text-align: center;
+			}
+			.block{
+				margin:5px;
+				padding:15px;
+				width:calc(100% - 40px);
+				background-color:white;
+				border-radius: 25px;
+				border: gray 1px solid;
+				display: inline-block;
+				text-align: left;
+				max-width: 500px;
+			}
+			.button {
+				color: white;
+				padding: 15px 32px;
+				text-align: center;
+				text-decoration: none;
+				display: inline-block;
+				font-size: 16px;
+				border-radius: 25px;
+			}
+			.button-enabled{
+				background-color:#4CAF50;
+				border: #3C9F40 2px solid;
+			}
+			.button-disabled{
+				color: black;
+				background-color:#e7e7e7;
+				border: #d7d7d7 2px solid;
+			}
+			
+			label{
+				text-align:left;
+			}
+		</style>
+		<script>
+		</script>
+	</head>
+	<body>
+		<div class="header">
+			<h1>Zarządzanie żaluzjami</h1>
+		</div>
+		<div class="content">
+			<div style="width:100%">
+				<div class="block">
+					<h1>Oświetlenie: 323 lx</h1>
+				</div>
+			</div>
+			<div style="width:100%">
+				<div class="block">
+					<h1>Tryby</h1>
+					<label><input type="radio" name="tryb" value="manual" checked> Ręczny</label><br />
+					<label><input type="radio" name="tryb" value="auto"> Automatyczny (odsłaniać powyżej <input type="number" name="autoNumber" value="300" /> lx)</label>
+				</div>
+			</div>
+			<div style="width:100%">
+				<div class="block">
+					<h1>Status żaluzji: odsłonięte</h1>
+				</div>
+			</div>
+			<div style="width:100%">
+				<div class="block">
+					<h1>Akcje</h1>
+					<button type="button" class="button button-enabled">Zasłoń</button>
+					<button type="button" class="button button-disabled">Odsłoń</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
