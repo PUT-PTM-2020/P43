@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <stdbool.h>
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -42,6 +42,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim1;
 
 /* USER CODE BEGIN PV */
 
@@ -50,20 +51,20 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-
-void delay (uint16_t miliseconds){
-	_HAL_TIM_SET_COUNTER(&htim1, 0);
-	while (HAL_TIM_GET_COUNTER(&htim1) <miliseconds); //Wait for the desired value
+void delay(uint16_t miliseconds)
+{
+	HAL_Delay(miliseconds);
 }
 
 void stepper_motor_set_rpm(uint8_t rpm){ //Max rpm for this motor should be around 33rpm
-	delay(60000000/rpm/stepsperrev); //60000000us = 1 min
+	delay(60000/rpm/spr); //60000000us = 1 min
 }
 
 void stepper_motor_full_drive(int step_id){
@@ -95,14 +96,14 @@ void stepper_motor_full_drive(int step_id){
 	}
 }
 
-void stepper_motor_rotate_by_angle (float rotation_angle,  bool dir, uint8_t rpm) {
+void stepper_motor_rotate_by_angle (float rotation_angle,_Bool dir, uint8_t rpm) {
 
 	float angle_per_seq = (float)360/512; //Amount of degrees in a full rotation divided by the number of sequences
 	int n_of_sequences = rotation_angle/angle_per_seq;
 
 	for(int sq=0; sq<n_of_sequences; sq++){
 		if (dir == 1) 					  //dir=1 for clockwise rotation
-			for(int8_t st=0; st<=7; st++){
+			for(int8_t st=0; st<=3; st++){
 				stepper_motor_full_drive(st);
 										  /*The set_rpm function is called after drive
 										  function because it achieves rpm control by
@@ -110,7 +111,7 @@ void stepper_motor_rotate_by_angle (float rotation_angle,  bool dir, uint8_t rpm
 				stepper_motor_set_rpm(rpm);
 			}
 		else if(dir==0){				  //dir=0 for anti-clockwise rotation
-			for(int8_t st=7; st>=0;st--){
+			for(int8_t st=3; st>=0;st--){
 				stepper_motor_full_drive(st);
 				stepper_motor_set_rpm(rpm);
 			}
@@ -118,7 +119,6 @@ void stepper_motor_rotate_by_angle (float rotation_angle,  bool dir, uint8_t rpm
 	}
 
 }
-
 /* USER CODE END 0 */
 
 /**
@@ -149,6 +149,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -157,11 +158,11 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  stepper_motor_rotate_by_angle(15,1,10);
+
     /* USER CODE END WHILE */
+
     /* USER CODE BEGIN 3 */
-
-	  stepper_motor_rotate_by_angle(15,1,16);
-
   }
   /* USER CODE END 3 */
 }
@@ -181,10 +182,14 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
-  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
-  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
-  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_NONE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
+  RCC_OscInitStruct.PLL.PLLM = 4;
+  RCC_OscInitStruct.PLL.PLLN = 168;
+  RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV4;
+  RCC_OscInitStruct.PLL.PLLQ = 4;
   if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -193,15 +198,61 @@ void SystemClock_Config(void)
   */
   RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
                               |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
-  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_HSI;
-  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV1;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV16;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
   RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
 
   if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_0) != HAL_OK)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM1_Init(void)
+{
+
+  /* USER CODE BEGIN TIM1_Init 0 */
+
+  /* USER CODE END TIM1_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM1_Init 1 */
+
+  /* USER CODE END TIM1_Init 1 */
+  htim1.Instance = TIM1;
+  htim1.Init.Prescaler = 62499;
+  htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim1.Init.Period = 63999;
+  htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim1.Init.RepetitionCounter = 0;
+  htim1.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim1, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim1, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM1_Init 2 */
+
+  /* USER CODE END TIM1_Init 2 */
+
 }
 
 /**
@@ -214,6 +265,7 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
