@@ -158,11 +158,35 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  stepper_motor_rotate_by_angle(15,1,10);
+
 
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
+
+	  if(HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET){//wstêpne sterowanie przyciskami
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,SET);
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,RESET);
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,RESET);
+	  	  	  stepper_motor_rotate_by_angle(360, 1, 10);
+	  	}else{ HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,RESET);}
+	  if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_7)==GPIO_PIN_SET){
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,RESET);
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,SET);
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,RESET);
+		  stepper_motor_rotate_by_angle(360,0,10);
+	  }else{ HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,RESET);}
+		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_12,RESET);
+		  		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_13,RESET);
+		  		  HAL_GPIO_WritePin(GPIOD,GPIO_PIN_14,SET);
+		  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
+		  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
+		  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
+		  		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+
+
+
+
   }
   /* USER CODE END 3 */
 }
@@ -267,16 +291,33 @@ static void MX_GPIO_Init(void)
   /* GPIO Ports Clock Enable */
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, Silnik_1_Pin|Silnik_2_Pin|Silnik_3_Pin|Silnik_4_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pins : PA1 PA2 PA3 PA4 */
-  GPIO_InitStruct.Pin = GPIO_PIN_1|GPIO_PIN_2|GPIO_PIN_3|GPIO_PIN_4;
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
+
+  /*Configure GPIO pins : Silnik_1_Pin Silnik_2_Pin Silnik_3_Pin Silnik_4_Pin */
+  GPIO_InitStruct.Pin = Silnik_1_Pin|Silnik_2_Pin|Silnik_3_Pin|Silnik_4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : K1_Pin K2_Pin */
+  GPIO_InitStruct.Pin = K1_Pin|K2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PD12 PD13 PD14 PD15 */
+  GPIO_InitStruct.Pin = GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
 }
 

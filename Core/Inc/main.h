@@ -58,6 +58,18 @@ void Error_Handler(void);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
+#define Silnik_1_Pin GPIO_PIN_1
+#define Silnik_1_GPIO_Port GPIOA
+#define Silnik_2_Pin GPIO_PIN_2
+#define Silnik_2_GPIO_Port GPIOA
+#define Silnik_3_Pin GPIO_PIN_3
+#define Silnik_3_GPIO_Port GPIOA
+#define Silnik_4_Pin GPIO_PIN_4
+#define Silnik_4_GPIO_Port GPIOA
+#define K1_Pin GPIO_PIN_5
+#define K1_GPIO_Port GPIOA
+#define K2_Pin GPIO_PIN_7
+#define K2_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
