@@ -1,5 +1,5 @@
-#ifndef CUSTOMSTEPPERLIB
-#define CUSTOMSTEPPERLIB
+#ifndef P43_CUSTOMSTEPPERLIB
+#define P43_CUSTOMSTEPPERLIB
 
 #include "main.h"
 #include <stdbool.h>

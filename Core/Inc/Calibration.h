@@ -1,5 +1,5 @@
-#ifndef CALIBRATION
-#define CALIBRATION
+#ifndef P43_CALIBRATION
+#define P43_CALIBRATION
 
 #include "CustomStepperLib.h"
 #include "Communication.h"
