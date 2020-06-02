@@ -1,5 +1,5 @@
-#ifndef HEADERFILE_H
-#define HEADERFILE_H
+#ifndef CUSTOMSTEPPERLIB
+#define CUSTOMSTEPPERLIB
 
 #include "main.h"
 #include <stdbool.h>

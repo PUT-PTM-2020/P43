@@ -1,5 +1,5 @@
-#ifndef HEADERFILE_H
-#define HEADERFILE_H
+#ifndef CALIBRATION
+#define CALIBRATION
 
 #include "CustomStepperLib.h"
 #include "Communication.h"
