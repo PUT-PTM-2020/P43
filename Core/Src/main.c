@@ -20,7 +20,7 @@
 
   /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-
+#include "CustomStepperLib.h"
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 
