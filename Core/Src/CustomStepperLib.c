@@ -1,11 +1,11 @@
 #include "CustomStepperLib.h"
 
 /* This fragment might need to be changed based on STM config */
-GPIO_TypeDef M_GPIOA = GPIOA;
-uint16_t M_PIN1 = GPIO1;
-uint16_t M_PIN2 = GPIO2;
-uint16_t M_PIN3 = GPIO3;
-uint16_t M_PIN4 = GPIO4;
+
+uint16_t M_PIN1 = GPIO_PIN_1;
+uint16_t M_PIN2 = GPIO_PIN_2;
+uint16_t M_PIN3 = GPIO_PIN_3;
+uint16_t M_PIN4 = GPIO_PIN_4;
 
 void delay(uint16_t miliseconds)
 {
@@ -22,28 +22,28 @@ void stepper_motor_full_drive(int step_id)
 {
 	switch (step_id) {
 	case 0:
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN1, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN2, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN3, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN1, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN3, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN4, GPIO_PIN_RESET);
 		break;
 	case 1:
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN1, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN2, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN3, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN1, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN2, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN3, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN4, GPIO_PIN_RESET);
 		break;
 	case 2:
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN1, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN2, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN3, GPIO_PIN_SET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN4, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN1, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN3, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN4, GPIO_PIN_RESET);
 		break;
 	case 3:
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN1, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN2, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN3, GPIO_PIN_RESET);
-		HAL_GPIO_WritePin(M_GPIOA, M_PIN4, GPIO_PIN_SET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN1, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN2, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN3, GPIO_PIN_RESET);
+		HAL_GPIO_WritePin(GPIOA, M_PIN4, GPIO_PIN_SET);
 		break;
 	}
 }
