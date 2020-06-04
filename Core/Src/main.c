@@ -97,27 +97,7 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-      if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET) {//wstepne sterowanie przyciskami
-          HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, SET);
-          HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
-          HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
-          stepper_motor_rotate_by_angle(360, 1, 10);
-      }
-      else { HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET); }
-      if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7) == GPIO_PIN_SET) {
-          HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
-          HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, SET);
-          HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
-          stepper_motor_rotate_by_angle(360, 0, 10);
-      }
-      else { HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET); }
-      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
-      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
-      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, SET);
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_1, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_2, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_3, GPIO_PIN_RESET);
-      HAL_GPIO_WritePin(GPIOA, GPIO_PIN_4, GPIO_PIN_RESET);
+
   }
   /* USER CODE END 3 */
 }
@@ -184,6 +164,12 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12|GPIO_PIN_13|GPIO_PIN_14|GPIO_PIN_15, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin : PA0 */
+  GPIO_InitStruct.Pin = GPIO_PIN_0;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
   /*Configure GPIO pins : Silnik_1_Pin Silnik_2_Pin Silnik_3_Pin Silnik_4_Pin */
   GPIO_InitStruct.Pin = Silnik_1_Pin|Silnik_2_Pin|Silnik_3_Pin|Silnik_4_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
@@ -191,9 +177,15 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : K1_Pin K2_Pin */
-  GPIO_InitStruct.Pin = K1_Pin|K2_Pin;
+  /*Configure GPIO pins : PA5 PA6 PA13 PA14 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_13|GPIO_PIN_14;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+
+  /*Configure GPIO pins : PA7 PA8 PA9 PA10 */
+  GPIO_InitStruct.Pin = GPIO_PIN_7|GPIO_PIN_8|GPIO_PIN_9|GPIO_PIN_10;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
@@ -204,10 +196,50 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI0_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI9_5_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI9_5_IRQn);
+
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
+	HAL_GPIO_TogglePin(GPIOD,GPIO_PIN_15|GPIO_PIN_14|GPIO_PIN_13|GPIO_PIN_12);
+	 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7) == GPIO_PIN_SET) {//K2 - lewo 1 360
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, SET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
+	 			stepper_motor_rotate_by_angle(360, 1, 10);
+	 		}
+	 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) == GPIO_PIN_SET) {//K3 - prawo 360
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, SET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
+	 			stepper_motor_rotate_by_angle(360, 0, 10);
+	 		}
+	 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9) == GPIO_PIN_SET) {//K4 - otwieranie do po³owy lewo 5*360
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, SET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, SET);
+	 			stepper_motor_rotate_by_angle(1800, 1, 10);
+	 		}
+	 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_SET) {//K5 - zamykanie od po³owy prawo 5*360
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, SET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
+	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, SET);
+	 			stepper_motor_rotate_by_angle(1800, 0, 10);
+	 		}
 
+
+}
 /* USER CODE END 4 */
 
 /**
