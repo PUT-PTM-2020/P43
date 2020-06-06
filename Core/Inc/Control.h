@@ -14,32 +14,28 @@ Position& P;
 
 int gRPM = 10; //global RPM
 
-
-/*Placeholders*/
-bool b1, b2, b3, b4, b5, b6, b7, b8;
-/*End of placeholders*/
-
-bool CalibrateClosed(Position& P) {
+bool CalibrateClosed() {
 	ManualControl();
 	P.closed==P.current;
+	CalibrateOpen();
 }
 
-bool CalibrateOpen(Position& P) {
+bool CalibrateOpen() {
 	ManualControl();
-	P.closed == P.current;
+	P.open == P.current;
 }
 
 void ManualControl() {
-	if (b7 == 1) {
-		stepper_motor_rotate_by_angle(10, 1, gRPM);
-		P.current += 10;
-	}
-	else if (b8 == 1) {
-		stepper_motor_rotate_by_angle(10, 0, gRPM);
-		P.current -= 10;
-	}
-	if (calibrationMode && b6 == 1)
-		return;
+	do {
+		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_13) == GPIO_PIN_SET) {
+			stepper_motor_rotate_by_angle(10, 1, gRPM);
+			P.current += 10;
+		}
+		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_14) == GPIO_PIN_SET) {
+			stepper_motor_rotate_by_angle(10, 0, gRPM);
+			P.current -= 10;
+		}
+	} while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_SET || HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET);
 }
 
 void OpenToTheLimit() {
@@ -56,4 +52,10 @@ void CloseToTheLimit() {
 	}
 }
 
+void LightControl() {
+
+}
+void TimeControl() {
+
+}
 #endif
