@@ -23,7 +23,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "CustomStepperLib.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -53,11 +53,12 @@ static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	//k0 - A5,k1-A6,k2-A7,k3-A8,k4-A9,k5-A10,k6-A13,k7-A14
+	// 0 - manual 1 - zamknij 2 - otworz 3 - automatyczne/natezenie swiatla 4 - automatyczne/harmonogram
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET) {//user - tryb recznego ustawienia
 		ManualControl();
 	}
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6) == GPIO_PIN_SET) {//K2 - lewo 1 360
-		OpenToTheLimit();
+		Open();
 	}
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7) == GPIO_PIN_SET) {//K3 - prawo 360
 		CloseToTheLimit();
@@ -71,7 +72,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin) {
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_SET) {//tryb kalibracji
 		CalibrateOpen();
 	}
-
 }
 /* USER CODE END PFP */
 

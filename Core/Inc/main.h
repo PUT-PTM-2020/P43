@@ -32,7 +32,8 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "CustomStepperLib.h"
+#include "Control.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
