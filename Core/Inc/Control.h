@@ -1,18 +1,7 @@
-#ifndef P43_CALIBRATION
-#define P43_CALIBRATION
+#ifndef P43_CONTROL
+#define P43_CONTROL
 
 #include "CustomStepperLib.h"
-
-bool calibrationMode;
-
-struct Position {
-	float current; //In degrees
-	float closed; //the angle required to turn from the leftmost to the rightmost position
-	float open;
-};
-Position P;
-
-int gRPM = 10; //global RPM
 
 bool CalibrateClosed();
 
