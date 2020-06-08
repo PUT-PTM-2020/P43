@@ -1,4 +1,5 @@
 #include "Control.h"
+#include <cmath>
 
 int gRPM = 10;
 
@@ -31,22 +32,20 @@ void ManualControl() {
 }
 
 void Open() {
-	while (currentPos < openPos) {
-		stepper_motor_rotate_by_angle(10, 1, gRPM);
-		currentPos += 10;
+	if (openPos - currentPos < 0) {
+		stepper_motor_rotate_by_angle(abs(currentPos - openPos), 1, gRPM);
+		currentPos== openPos;
+	}
+	else if (openPos - currentPos > 0) {
+		stepper_motor_rotate_by_angle(abs(currentPos - openPos), 0, gRPM);
+		currentPos== openPos;
 	}
 }
 
 void CloseToTheLimit() {
-	while (currentPos > closedPos) {
-		stepper_motor_rotate_by_angle(10, 0, gRPM);
-		currentPos -= 10;
-	}
-}
-
-void LightControl() {
-	while (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) == GPIO_PIN_SET) {
-		//do stuff here
+	if (closedPos - currentPos < 0) {
+		stepper_motor_rotate_by_angle(abs(currentPos - openPos), 0, gRPM);
+		currentPos == closedPos;
 	}
 }
 
