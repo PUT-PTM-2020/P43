@@ -48,7 +48,7 @@ int aktualna_pozycja = 0;
 int maksymalna_pozycja = 100;
 
 int aktualny_czas = 0;
-int czas_otwarcia = 50000;
+int czas_otwarcia = 150000;
 int czas_zamkniecia = 100000;
 /* USER CODE END PD */
 
@@ -68,7 +68,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 /* USER CODE BEGIN PFP */
 void otworz(){
-    stepper_motor_rotate_by_angle(10, 1, gRPM);
+    stepper_motor_rotate_by_angle(10, 0, gRPM);
     aktualna_pozycja -= 10;
 }
 
@@ -78,64 +78,6 @@ void zamknij(){
 }
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 //k0 - A5,k1-A6,k2-A7,k3-A8,k4-A9,k5-A10,k6-A13,k7-A14
-	/*if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET){//user - tryb dok³adnego ustawienia
-	do{
-		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_13)==GPIO_PIN_SET){
-			stepper_motor_rotate_by_angle(10,1,10);
-		}
-		if(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_14)==GPIO_PIN_SET){
-			stepper_motor_rotate_by_angle(10,0,10);
-		}
-	}while(HAL_GPIO_ReadPin(GPIOA,GPIO_PIN_0)==GPIO_PIN_SET);
-
-	}
-	 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7) == GPIO_PIN_SET) {//K2 - lewo 1 360
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, SET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
-	 			stepper_motor_rotate_by_angle(360, 1, 10);
-
-	 		}
-	 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) == GPIO_PIN_SET) {//K3 - prawo 360
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, SET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
-	 			stepper_motor_rotate_by_angle(360, 0, 10);
-	 		}
-	 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9) == GPIO_PIN_SET) {//K4 - otwieranie do po³owy lewo 5*360
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, SET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, SET);
-	 			stepper_motor_rotate_by_angle(1800, 1, 10);
-	 		}
-	 		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_SET) {//K5 - zamykanie od po³owy prawo 5*360
-	 			stepper_motor_rotate_by_angle(1800, 0, 10);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, SET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
-	 			HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, SET);
-
-	 		}*/
-
-	/*if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET) {//user - tryb recznego ustawienia
-			ManualControl();
-		}
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_0) == GPIO_PIN_SET) {//K2 - lewo 1 360
-			Open();
-		}
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7) == GPIO_PIN_SET) {//K3 - prawo 360
-			CloseToTheLimit();
-		}
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_8) == GPIO_PIN_SET) {//Sterowanie automatyczne - poziom œwiatla
-			LightControl();
-		}
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9) == GPIO_PIN_SET) {//Sterowanie automatyczne - harmonogram
-			TimeControl();
-		}
-		if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_10) == GPIO_PIN_SET) {//tryb kalibracji
-			CalibrateOpen();
-		}*/
 	/*
 	    przyciski
 	    k0 - tryb manual
@@ -147,7 +89,6 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	    k6 - przesun w dol
 	    k7 - przesun w gore
 	*/
-	aktualny_czas = HAL_GetTick();
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET) {//k0
 	    mode = 0;
 	}
@@ -180,6 +121,8 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	        zamknij();
 	    }
 	}
+
+
 }
 
 /* USER CODE END PFP */
@@ -224,12 +167,20 @@ int main(void)
   /* USER CODE BEGIN WHILE */
   while (1)
   {
+	  //PD12 - zielony,PD13-pomarañczowy,PD14-czerwony,PD15-niebieski
+	  	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_13) == GPIO_PIN_SET) {//k6
+	        otworz();
+	  	}
+	  	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_14) == GPIO_PIN_SET) {//k7
+	  	        zamknij();
+
+	  	}
 	  if(mode == 0){
-	      //nic nie robimy
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, SET);
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, RESET);
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, RESET);
+
 	  } else if(mode == 1){
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, RESET);
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_13, SET);
@@ -256,9 +207,22 @@ int main(void)
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_14, RESET);
 	      HAL_GPIO_WritePin(GPIOD, GPIO_PIN_15, SET);
 
+	     if(aktualny_czas > czas_zamkniecia){
+	             if(aktualny_czas > czas_otwarcia){
+	                 if(aktualna_pozycja > 0){
+	                     otworz();
+	                 }
 
-
-	  }
+	             }else{
+	                 if(aktualna_pozycja < maksymalna_pozycja){
+	                     zamknij();
+	                 }
+	             }
+	         }else{
+	             if(aktualna_pozycja > 0){
+	                otworz();
+	             }
+	         }
 
     /* USER CODE END WHILE */
 
@@ -344,9 +308,9 @@ static void MX_GPIO_Init(void)
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PA5 PA6 PA7 PA8 
-                           PA9 */
+                           PA9 PA10 PA13 PA14 */
   GPIO_InitStruct.Pin = GPIO_PIN_5|GPIO_PIN_6|GPIO_PIN_7|GPIO_PIN_8 
-                          |GPIO_PIN_9;
+                          |GPIO_PIN_9|GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_14;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
@@ -357,12 +321,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
-
-  /*Configure GPIO pins : PA10 PA13 PA14 */
-  GPIO_InitStruct.Pin = GPIO_PIN_10|GPIO_PIN_13|GPIO_PIN_14;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI0_IRQn, 0, 0);
