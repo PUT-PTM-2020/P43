@@ -33,7 +33,6 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "CustomStepperLib.h"
-#include "Control.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -67,10 +66,6 @@ void Error_Handler(void);
 #define Silnik_3_GPIO_Port GPIOA
 #define Silnik_4_Pin GPIO_PIN_4
 #define Silnik_4_GPIO_Port GPIOA
-#define K1_Pin GPIO_PIN_5
-#define K1_GPIO_Port GPIOA
-#define K2_Pin GPIO_PIN_7
-#define K2_GPIO_Port GPIOA
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
