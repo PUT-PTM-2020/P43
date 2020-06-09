@@ -147,6 +147,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin){
 	    k6 - przesun w dol
 	    k7 - przesun w gore
 	*/
+	aktualny_czas = HAL_GetTick();
 	if (HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5) == GPIO_PIN_SET) {//k0
 	    mode = 0;
 	}
